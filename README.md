@@ -7,6 +7,10 @@ Comprueba si una cédula está bien escrita y descubre su nombre.
 ```
 python -m pip install requests
 ```
+* Instale el modulo **beautiful soup (bs4)**:
+```
+python -m pip install bs4
+```
 
 ### ¿Cómo usar?
 Desde la consola/terminal ejecute **main.py** e ingrese la cédula (ya sea con guiones o no).
