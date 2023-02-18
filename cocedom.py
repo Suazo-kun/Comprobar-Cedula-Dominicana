@@ -1,9 +1,8 @@
-#!/usr/bin/python3
-
 import bs4, copy, json, requests
 
 URL = "https://dgii.gov.do/app/WebApps/ConsultasWeb/consultas/ciudadanos.aspx"
-URL2 = "https://api-ov.intrant.gob.do/api/User/ValidaCedula"
+URL2 = "https://servicios.mirex.gob.do/proxy/api/padron"
+URL3 = "https://api-ov.intrant.gob.do/api/User/ValidaCedula"
 
 FORM_DATA = {
     'ctl00$smMain': "ctl00$cphMain$upBusqueda|ctl00$cphMain$btnBuscarCedula",
@@ -47,6 +46,22 @@ def ComprobarCedula2(cedula: str):
     out = {'nombre': "", 'cedula': ""}
 
     cedula = cedula.replace("-", "")
+
+    if len(cedula) != 11:
+        raise ValueError("Cédula invalida.")
+
+    response = requests.get(f"{URL2}/{cedula}")
+    data = json.loads(response.text)['result']
+
+    out['nombre'] = " ".join((data['nombres'], data['apellido1'], data['apellido2']))
+    out['cedula'] = "-".join((cedula[0:3], cedula[3:10], cedula[-1]))
+
+    return out
+
+def ComprobarCedula3(cedula: str):
+    out = {'nombre': "", 'cedula': ""}
+
+    cedula = cedula.replace("-", "")
     cedula = "-".join((cedula[0:3], cedula[3:10], cedula[-1]))
 
     if len(cedula) != 13:
@@ -54,7 +69,7 @@ def ComprobarCedula2(cedula: str):
 
     cedula = cedula.split("-")
     data = {"ID1": cedula[0], "ID2": cedula[1], "ID3": cedula[2]}
-    response = requests.post(URL2, json=data)
+    response = requests.post(URL3, json=data)
     data = json.loads(response.text)
 
     if data['Nombre'] is None:
@@ -65,7 +80,7 @@ def ComprobarCedula2(cedula: str):
     return out
 
 def ComprobarCedula(cedula: str):
-    for function in (ComprobarCedula1, ComprobarCedula2):
+    for function in (ComprobarCedula1, ComprobarCedula2, ComprobarCedula3):
 
         try: out = function(cedula)
         except Exception: continue

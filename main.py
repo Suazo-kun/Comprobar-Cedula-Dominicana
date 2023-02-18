@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from cocedom import ComprobarCedula
 
 
