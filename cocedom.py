@@ -1,3 +1,6 @@
+__version__ = "0.2"
+__author__ = "Suazo-kun (suazokun@gmail.com)"
+
 import bs4, copy, json, requests
 
 URL = "https://dgii.gov.do/app/WebApps/ConsultasWeb/consultas/ciudadanos.aspx"
